@@ -40,7 +40,7 @@ stages:
           
           - script: |
               echo "Running container..."
-              docker run -d -p 8085:8080 --name backend29 $(BACKEND_IMAGE):$(TAGS)
+              docker run -d -p 8085:8080 --name backend29 --network project-network $(BACKEND_IMAGE):$(TAGS)
               sleep 10
               docker ps
             displayName: "Run Backend Container"
@@ -48,7 +48,7 @@ stages:
            # 🐳 Run Frontend container (with BACKEND env)
           - script: |
               echo "Starting frontend container..."
-              docker run -d --name frontend29 -e BACKEND=http://host.docker.internal:8085 -p 8084:8080 $(FRONTEND_IMAGE):$(TAGS)
+              docker run -d --name frontend29 --network project-network -e BACKEND=http://backend29:8080 -p 8084:8080 $(FRONTEND_IMAGE):$(TAGS)
             displayName: "Run Frontend Container"
 
 
