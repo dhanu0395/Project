@@ -39,16 +39,20 @@ stages:
                 $(tags)
           
           - script: |
-              echo "Running container..."
+              echo "Creating Docker network if it doesn't exist..."
+              docker network inspect project-network >/dev/null 2>&1 || docker network create project-network
+
+              echo "Running backend container..."
               docker run -d -p 8085:8080 --name backend29 --network project-network $(BACKEND_IMAGE):$(TAGS)
               sleep 10
               docker ps
             displayName: "Run Backend Container"
 
-           # 🐳 Run Frontend container (with BACKEND env)
           - script: |
-              echo "Starting frontend container..."
+              echo "Running frontend container..."
               docker run -d --name frontend29 --network project-network -e BACKEND=http://backend29:8080 -p 8084:8080 $(FRONTEND_IMAGE):$(TAGS)
+              docker ps
             displayName: "Run Frontend Container"
+
 
 
