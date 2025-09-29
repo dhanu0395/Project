@@ -1,5 +1,5 @@
 # Stage 1: Build JAR
-FROM maven:3.9.0-jdk-8 AS builder
+FROM maven:3.8.6-openjdk-8 AS builder
 WORKDIR /app
 COPY backend/pom.xml ./pom.xml
 COPY backend/src ./src
