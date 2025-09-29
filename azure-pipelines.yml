@@ -8,29 +8,9 @@ variables:
   BACKEND_IMAGE: 'dhanu0395/project-backend'
   TAGS: $(Build.BuildId) 
 
-stages:
-  - stage: buildStage
-    jobs:
-      - job: BuildJob
-        steps:
-          - task: Maven@4
-            displayName: 'Build both frontend and backend'
-            inputs:
-              azureSubscription: 'DjAzureSPNConnection'
-              mavenPomFile: 'pom.xml'
-              goals: 'package'
-              options: '-DskipTests'
-              publishJUnitResults: true
-              testResultsFiles: '**/surefire-reports/TEST-*.xml'
-              javaHomeOption: 'JDKVersion'
-              mavenVersionOption: 'Default'
-              mavenAuthenticateFeed: false
-              effectivePomSkip: false
-              sonarQubeRunAnalysis: false
-              
+stages:              
   - stage: Docker
     displayName: "Build, Push, and Run Docker Images"
-    dependsOn: buildStage
     jobs:
       - job: DockerBuildPushRun
         steps:
