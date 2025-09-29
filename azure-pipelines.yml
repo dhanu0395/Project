@@ -48,7 +48,7 @@ stages:
            # 🐳 Run Frontend container (with BACKEND env)
           - script: |
               echo "Starting frontend container..."
-              docker run -d --name frontend29 -e BACKEND=http://localhost:8085 -p 8084:8080 $(FRONTEND_IMAGE):$(TAGS)
+              docker run -d --name frontend29 -e BACKEND=http://host.docker.internal:8085 -p 8084:8080 $(FRONTEND_IMAGE):$(TAGS)
             displayName: "Run Frontend Container"
 
 
