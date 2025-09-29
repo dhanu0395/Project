@@ -43,7 +43,7 @@ stages:
               repository: $(BACKEND_IMAGE)
               command: 'buildAndPush'
               Dockerfile: 'backend/Dockerfile'
-              buildContext: backend
+              buildContext: backend/target/
               tags: |
                 $(tags)
 
@@ -54,7 +54,7 @@ stages:
               repository: $(FRONTEND_IMAGE)
               command: 'buildAndPush'
               Dockerfile: 'frontend/Dockerfile'
-              buildContext: frontend
+              buildContext: frontend/target/
               tags: |
                 $(tags)
           
