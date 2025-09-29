@@ -14,10 +14,10 @@ stages:
       - job: BuildJob
         steps:
           - task: Maven@4
-            displayName: 'Build Backend'
+            displayName: 'Build both frontend and backend'
             inputs:
               azureSubscription: 'DjAzureSPNConnection'
-              mavenPomFile: 'backend/pom.xml'
+              mavenPomFile: 'pom.xml'
               goals: 'clean package'
               options: '-DskipTests'
               publishJUnitResults: true
@@ -27,21 +27,13 @@ stages:
               mavenAuthenticateFeed: false
               effectivePomSkip: false
               sonarQubeRunAnalysis: false
-          
-          - task: Maven@4
-            displayName: 'Build Frontend'
-            inputs:
-              azureSubscription: 'DjAzureSPNConnection'
-              mavenPomFile: 'frontend/pom.xml'
-              goals: 'clean package'
-              options: '-DskipTests'
-              publishJUnitResults: true
-              testResultsFiles: '**/surefire-reports/TEST-*.xml'
-              javaHomeOption: 'JDKVersion'
-              mavenVersionOption: 'Default'
-              mavenAuthenticateFeed: false
-              effectivePomSkip: false
-              sonarQubeRunAnalysis: false
+  - stage: Docker
+    displayName: "Build, Push, and Run Docker Images"
+    dependsOn: buildStage
+    jobs:
+      - job: DockerBuildPushRun
+        steps:
+          - checkout: self      
 
           - task: Docker@2
             displayName: 'Build & Push Backend Image'
@@ -67,7 +59,7 @@ stages:
           
           - script: |
               echo "Running container..."
-              docker run -d -p 8085:8080 --name backend $(BACKEND_IMAGE):$(TAGS)
+              docker run -d -p 8085:8080 --name backend29 $(BACKEND_IMAGE):$(TAGS)
               sleep 10
               docker ps
             displayName: "Run Backend Container"
@@ -75,7 +67,7 @@ stages:
            # 🐳 Run Frontend container (with BACKEND env)
           - script: |
               echo "Starting frontend container..."
-              docker run -d --name frontend -e BACKEND=http://localhost:8085 -p 8084:8080 $(FRONTEND_IMAGE):$(TAGS)
+              docker run -d --name frontend29 -e BACKEND=http://localhost:8085 -p 8084:8080 $(FRONTEND_IMAGE):$(TAGS)
             displayName: "Run Frontend Container"
 
 
